@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>LazyEats</title>
+    <style>
+      /*For better scrolling*/
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: "Chenla", Chenla;
+        background: linear-gradient(
+          to right,
+          #a5d6a7,
+          #549455
+        ); /* Dark green to light green gradient */
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        height: 200vh;
+      }
+      #searchForm {
+        display: flex;
+        background-color: #69d269;
+        border-radius: 8px;
+        overflow: hidden;
+        margin-top: 5vh;
+        margin-bottom: 20px; /*Changing the size of the margins*/
+        padding: 10px;
+        position: relative;
+        z-index: 1;
+      }
+
+      #searchInput {
+        flex: 2;
+        width: 500px;
+        padding: 10px;
+        border: none;
+        outline: none;
+        font-size: 16px;
+        border-radius: 4px;
+      }
+
+      #searchInput::placeholder {
+        color: #949494;
+      }
+
+      #searchButton {
+        background-color: #007bff;
+        color: #fff;
+        padding: 10px 15px;
+        border: none;
+        cursor: pointer;
+        outline: none;
+        border-radius: 4px;
+      }
+
+      .rectangle-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-evenly;
+        align-items: center;
+        width: 80%; /* Adjust as needed */
+        max-width: 1200px; /* Max width for better responsiveness */
+        margin: auto;
+      }
+
+      .rectangle {
+        flex: 1;
+        background-color: #69d269; /* Green rectangle background */
+        color: #0c3b23; /*COLOUR TEXT CHANGE*/
+        padding: 20px;
+        text-align: center;
+        margin: 10px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      .static-rectangle {
+        flex: 1;
+        background-color: #3e773f; /* Darker green for static rectangles */
+        color: #fff;
+        padding: 20px;
+        text-align: center;
+        margin: 10px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      .window-shape {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        max-width: 1200px;
+      }
+    </style>
+  </head>
+  <body>
+    <!--Logo-->
+    <img src="/static/logoWithName.png" alt="logo" width="500" />
+    <form id="searchForm">
+      <input
+        type="text"
+        id="searchInput"
+        name="query"
+        placeholder="What's the meal of the day? (you may write your dietary restriction)"
+      />
+      <button type="submit" id="searchButton">Search</button>
+    </form>
+    <br />
+    <div class="window-shape">
+      <div class="rectangle-container">
+        <div class="static-rectangle" id="staticRectangle1">
+          <p>Ingredients</p>
+        </div>
+
+        <div class="static-rectangle" id="staticRectangle2">
+          <p>Recipe</p>
+        </div>
+      </div>
+
+      <div class="rectangle-container" id="dynamicRectangleContainer">
+        <div class="rectangle" id="dynamicRectangle1">
+          <p></p>
+        </div>
+
+        <div class="rectangle" id="dynamicRectangle2">
+          <p></p>
+        </div>
+      </div>
+    </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Function to initialize the map
+        function initMap() {
+          // Center the map around McGill University
+          var mcgillUniversity = { lat: 45.5048, lng: -73.5772 };
+
+          // Create a map object
+          var map = new google.maps.Map(
+            document.getElementById("mapContainer"),
+            {
+              zoom: 14,
+              center: mcgillUniversity,
+            }
+          );
+
+          // Add markers for grocery shops
+          var groceryShop1 = new google.maps.Marker({
+            position: { lat: 45.5048, lng: -73.5772 },
+            map: map,
+            title: "Grocery Shop 1",
+          });
+
+          var groceryShop2 = new google.maps.Marker({
+            position: { lat: 45.504, lng: -73.5745 },
+            map: map,
+            title: "Grocery Shop 2",
+          });
+
+          // Add more grocery shops as needed
+        }
+
+        // Load the map after the page is fully loaded
+        initMap();
+      });
+    </script>
+    <script>
+      document
+        .getElementById("searchForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault(); // Prevent the default form submission
+
+          var query = document.getElementById("searchInput").value;
+
+          // Perform AJAX request
+          var xhr = new XMLHttpRequest();
+          xhr.open("GET", "/search?query=" + encodeURIComponent(query), true);
+
+          xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+              // Handle the response from the server
+              var responseData = JSON.parse(xhr.responseText);
+
+              // Update div content with response strings
+              document
+                .getElementById("dynamicRectangle1")
+                .querySelector("p").innerText = responseData[0];
+              document
+                .getElementById("dynamicRectangle2")
+                .querySelector("p").innerText = responseData[1];
+            }
+          };
+
+          xhr.send();
+        });
+    </script>
+
+    <div>
+      <iframe
+        width="600"
+        height="450"
+        style="border: 0"
+        loading="lazy"
+        allowfullscreen
+        referrerpolicy="no-referrer-when-downgrade"
+        src="https://www.google.com/maps/embed/v1/place?key=AIzaSyCv1K6SJtkNQPIMrsUNyAfSM8C6ApitgYQ
+                  &q=Provigo+avenue+des+Canadiens+de+Montréal/@45.4964509,-73.8106746u"
+      >
+      </iframe>
+    </div>
+  </body>
+</html>

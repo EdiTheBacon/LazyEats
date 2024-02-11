@@ -1,0 +1,168 @@
+<!--Services-->
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Lazy Eats</title>
+  </head>
+
+  <body>
+    <div>
+      <table>
+        <!--Add href for home to become a button-->
+        <tr>
+          <td>
+            <a href="/templates/page1.html"
+              ><img src="/static/home.png" alt="home" width="150" height="150"
+            /></a>
+          </td>
+          <td><img src="/static/logo.png" alt="logo" width="200" /></td>
+        </tr>
+        <tr>
+          <td>
+            <img src="/static/servicesTitle.png" atl="services" width="400" />
+          </td>
+        </tr>
+      </table>
+      <img src="/static/services1.png" width="400" />
+      <div>
+        <table>
+          <form id="generate form">
+            <tr>
+              <td>
+                <input type="radio" name="answer" value="vegan" /><label
+                  >Vegan</label
+                >
+              </td>
+              <td>
+                <input type="radio" name="answer" value="gluten-free" /><label
+                  >Gluten-free</label
+                >
+              </td>
+              <td>
+                <input type="radio" name="answer" value="peanut-free" /><label
+                  >Peanut-free</label
+                >
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p>
+                  <button type="button" id="generate">Generate meal</button>
+                </p>
+              </td>
+            </tr>
+          </form>
+        </table>
+      </div>
+      <div class="window-shape">
+        <div class="rectangle-container">
+          <div class="static-rectangle" id="staticRectangle1">
+            <p>Special Offer</p>
+          </div>
+
+          <div class="static-rectangle" id="staticRectangle2">
+            <p>New Arrivals</p>
+          </div>
+        </div>
+
+        <div class="rectangle-container" id="dynamicRectangleContainer">
+          <div class="rectangle" id="dynamicRectangle1">
+            <p></p>
+          </div>
+
+          <div class="rectangle" id="dynamicRectangle2">
+            <p></p>
+          </div>
+        </div>
+      </div>
+      <script>
+        document.getElementById("generate").addEventListener("click"),
+          function (e) {
+            e.preventDefault(); // Prevent the default form submission
+
+            var query = document.getElementById("generate form").value;
+            // Perform AJAX request
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "/search?query=" + encodeURIComponent(query), true);
+
+            xhr.onreadystatechange = function () {
+              if (xhr.readyState == 4 && xhr.status == 200) {
+                // Handle the response from the server
+                var responseData = JSON.parse(xhr.responseText);
+
+                // Update div content with response strings
+                document
+                  .getElementById("dynamicRectangle1")
+                  .querySelector("p").innerText = responseData[0];
+                document
+                  .getElementById("dynamicRectangle2")
+                  .querySelector("p").innerText = responseData[1];
+              }
+            };
+
+            xhr.send();
+          };
+      </script>
+      <div>
+        <img src="/static/services2.png" width="500" />
+      </div>
+      <div>
+        <table>
+          <form id="recipe form">
+            <tr>
+              <!--INPUT FIELD RECIPE-->
+
+              <td><input type="recipe" id="recipe" name="recipe" /></td>
+              <td>
+                <p><button type="button">Search recipe</button></p>
+              </td>
+            </tr>
+          </form>
+        </table>
+      </div>
+      <img src="/static/services3.png" width="500" />
+      <table>
+        <tr>
+          <!--INPUT FIELD STORE-->
+          <td><input type="text" id="store" name="store" /></td>
+          <td><button type="button">Find store</button></td>
+        </tr>
+      </table>
+      <br />
+
+      <img
+        src="/static/map.png"
+        alt="map"
+        width="300"
+        height="200"
+      /><!--Placeholder image of a map, remove once api embeded-->
+      <!--EMBED MAP WITH API api info goes in source-->
+      <iframe
+        width="600"
+        height="450"
+        style="border: 0"
+        loading="lazy"
+        allowfullscreen
+        referrerpolicy="no-referrer-when-downgrade"
+        src="https://www.google.com/maps/embed/v1/place?key=AIzaSyCv1K6SJtkNQPIMrsUNyAfSM8C6ApitgYQ
+                &q=Space+Needle,Seattle+WA"
+      >
+      </iframe>
+    </div>
+    <!--This here is for the radio-buttons to provide the value-->
+    <script>
+      document
+        .getElementById("generate")
+        .addEventListener("click", function () {
+          // Get the selected radio button value
+          const selectedValue = document.querySelector(
+            'input[name="answer"]:checked'
+          ).value;
+
+          // Do something with the selected value (e.g., display it or process it further)
+          console.log("Selected value:", selectedValue);
+          console.log("Generating a meal for you :) ...");
+        });
+    </script>
+  </body>
+</html>
