@@ -53,7 +53,7 @@ def search():
 
     # Example: Return a JSON response
     client = OpenAI(
-        api_key='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')
+        api_key=""
     response = client.chat.completions.create(model="gpt-3.5-turbo",
                                               messages=[{"role": "system",
                                                          "content": "You are the world's best cook. You can tell what ingredients are present in any given meal just from hearing the dish's name. When given a dish's name, you will first list out  all of it's ingredient in subsequent order with no elaboration in the format: (Ingredients: a b c (comma separated, and all on the same with no additional detail in parentheses and no comma used elsewhere)...)\
